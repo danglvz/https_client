@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <random>
-#include "../src/using_openssl.h"
+#include "../src/client_interface.h"
 #include "gtest/gtest.h"
 
 class Interface_Test : public simple_https::client_interface {
