@@ -47,9 +47,7 @@ std::string client_interface::get_request(const std::string &req) {
     return output;
 }
 
-
 void client_interface::reload() {}
-
 
 
 inline std::string simple_https::client_interface::prepare_request(const std::string &req) {

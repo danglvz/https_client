@@ -20,7 +20,7 @@ namespace simple_https {
 
         void reload();
 
-        int get_descriptor() const;
+        [[nodiscard]] int get_descriptor() const;
     };
 
 }
