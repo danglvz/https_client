@@ -14,8 +14,7 @@ namespace simple_https {
         void reload() override;
 
     private:
-        int try_num{};
-        std::string req;
+
         std::string read() override;
         void write(const std::string &request_str) override;
         UniqPtr<SSL> ssl;

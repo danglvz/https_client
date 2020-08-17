@@ -43,7 +43,7 @@ public:
 
 
 https_client::https_client(const std::string &hostname) :
-socket_(hostname, HTTPS_DEFAULT_PORT), try_num{} {
+socket_(hostname, HTTPS_DEFAULT_PORT){
     ssl_ctx.reset(SSL_CTX_new(TLS_client_method()));
     if (!ssl_ctx) {
         throw_runtime_error_openssl("error in SSL_CTX_new");
@@ -63,7 +63,7 @@ void https_client::reload() {
 }
 
 std::string https_client::read() {
-    char buffer[1024];
+    char buffer[1024]{};
     SSL_read(ssl.get(), buffer, 1024);
     return std::string(buffer);
 }

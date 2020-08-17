@@ -33,7 +33,7 @@ socket_d::~socket_d() {
 
 void socket_d::reload() {
     int new_sock_d = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
-    if(connect ( socket_, addr->ai_addr, addr->ai_addrlen ) < 0) {
+    if(connect ( new_sock_d, addr->ai_addr, addr->ai_addrlen ) < 0) {
         throw std::system_error(errno, std::generic_category());
     }
     shutdown(socket_, SHUT_RDWR);
