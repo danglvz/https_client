@@ -20,7 +20,7 @@ FILE(GLOB SRC
         "*.h"
         "*.cpp")
 MESSAGE(${SRC})
-target_sources(https_client PRIVATE ${SRC})
+target_sources(https_client PRIVATE ${SRC} )
 target_include_directories(https_client PUBLIC ${OPENSSL_INCLUDE_DIR} ${https_client_SOURCE_DIR}/include)
 target_link_libraries(https_client PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 target_compile_options(https_client PRIVATE -Wall -lssl -lcrypto)

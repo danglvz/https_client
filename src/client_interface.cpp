@@ -1,17 +1,25 @@
 
 
 #include "client_interface.h"
+#include "sstream"
 
 
 using namespace simple_https;
 
 
+simple_https::client_interface::client_interface(const std::string &host) : hostname(host) {}
+
+std::string client_interface::read() {return std::string("none");}
+
+void client_interface::write(const std::string &request_str) {}
+
 std::string client_interface::get_request(const std::string &req) {
-    write(req);
+    std::string request{prepare_request(req)};
+    write(request);
     std::string output{read()};
     if ( output.empty() ) {
         reload();
-        write(req);
+        write(request);
         output.assign(read());
     }
     while(!output.empty() && output.find("\r\n\r\n") == std::string::npos) { output.append(read()); }
@@ -42,10 +50,16 @@ std::string client_interface::get_request(const std::string &req) {
 
 void client_interface::reload() {}
 
-std::string client_interface::read() {return std::string("none");}
-
-void client_interface::write(const std::string &request_str) {}
 
 
+inline std::string simple_https::client_interface::prepare_request(const std::string &req) {
+    std::string output{"GET /"};
+    if (req[0] == '/') output.erase(req.begin() + 1, req.end());
+    else output.append(req.begin(), req.end());
+    output.append(" HTTP/1.1\r\nHost:");
+    output.append(hostname);
+    output.append("\r\n\r\n");
+    return output;
+}
 
 

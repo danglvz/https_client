@@ -42,8 +42,10 @@ public:
 }
 
 
-https_client::https_client(const std::string &hostname) :
-socket_(hostname, HTTPS_DEFAULT_PORT){
+https_client::https_client(const std::string &hostname_) :
+client_interface(hostname_),
+socket_(hostname_, HTTPS_DEFAULT_PORT)
+{
     ssl_ctx.reset(SSL_CTX_new(TLS_client_method()));
     if (!ssl_ctx) {
         throw_runtime_error_openssl("error in SSL_CTX_new");

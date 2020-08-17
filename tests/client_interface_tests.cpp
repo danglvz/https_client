@@ -10,7 +10,10 @@
 class Interface_Test : public simple_https::client_interface {
 
     std::stringstream &ss_;
-    void write(const std::string &request_str) override{}
+    std::ostringstream &out;
+    void write(const std::string &request_str) override{
+        out << request_str;
+    }
     std::string read() override{
         char buffer[1025]{};
         ss_.read(buffer, 1024);
@@ -21,7 +24,7 @@ public:
     void reload() override {
         std::cout << "reload!" << std::endl;
     }
-    explicit Interface_Test(std::stringstream &s) : ss_(s) {};
+    explicit Interface_Test(std::stringstream &s, std::ostringstream &o) : ss_(s), out(o), simple_https::client_interface("something.com"){};
     Interface_Test &operator=(Interface_Test &&intt) noexcept {
         ss_ = std::move(intt.ss_);
         return *this;
@@ -31,8 +34,9 @@ public:
 class response_parse : public testing::Test {
 protected:
     std::stringstream ss{};
+    std::ostringstream os{};
     std::string response, output;
-    Interface_Test interfaceTest{ss};
+    Interface_Test interfaceTest{ss, os};
     void SetUp()  override {}
     void TearDown() override {}
     void set_random_response(std::size_t content_length) {
@@ -115,4 +119,21 @@ TEST_F(response_parse, large_data_test) {
     ASSERT_STREQ(response.c_str(), output.c_str());
 }
 
+TEST_F(response_parse, RequestFormatingTest1) {
+    set_random_response(5);
+    interfaceTest.get_request("?myreq=0&another=2");
+    output.assign(os.str());
+    std::string req{"GET /?myreq=0&another=2 HTTP/1.1\r\nHost:something.com\r\n\r\n"};
+    ASSERT_STREQ(req.c_str(), output.c_str());
+    os.clear();
+    interfaceTest.get_request("?myreq=0&another=2");
+    ASSERT_STREQ(req.c_str(), output.c_str());
+}
 
+TEST_F(response_parse, RequestFormatingZeroTest) {
+    set_random_response(5);
+    interfaceTest.get_request("");
+    output.assign(os.str());
+    std::string req{"GET / HTTP/1.1\r\nHost:something.com\r\n\r\n"};
+    ASSERT_STREQ(req.c_str(), output.c_str());
+}
