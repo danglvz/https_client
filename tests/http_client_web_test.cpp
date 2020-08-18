@@ -10,3 +10,6 @@ TEST(http_client_web_test, IsResult) {
     std::cout << output << std::endl;
     ASSERT_TRUE(!output.empty());
 }
+
+
+

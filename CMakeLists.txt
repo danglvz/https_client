@@ -6,5 +6,6 @@ project(https_client)
 
 set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(src)
-enable_testing()
-add_subdirectory(tests)
+#testing
+#enable_testing()
+#add_subdirectory(tests)
