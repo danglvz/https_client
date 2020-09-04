@@ -1,7 +1,7 @@
 
 
 #include <gtest/gtest.h>
-#include "../src/using_openssl.h"
+#include "using_openssl.h"
 
 TEST(Web_tests, IsResult) {
     std::string output;

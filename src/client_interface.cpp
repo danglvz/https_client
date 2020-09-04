@@ -1,7 +1,7 @@
 
 
+#include <sstream>
 #include "client_interface.h"
-#include "sstream"
 
 
 using namespace simple_https;
@@ -16,13 +16,18 @@ void client_interface::write(const std::string &request_str) {}
 std::string client_interface::get_request(const std::string &req) {
     std::string request{prepare_request(req)};
     write(request);
-    std::string output{read()};
+    std::string output{read()}, temp;
     if ( output.empty() ) {
         reload();
         write(request);
         output.assign(read());
     }
-    while(!output.empty() && output.find("\r\n\r\n") == std::string::npos) { output.append(read()); }
+    while(!output.empty() && output.find("\r\n\r\n") == std::string::npos) {
+        if (!(temp = read()).length()){
+            return std::string();
+        }
+         output.append(temp);
+    }
 
     std::vector<std::string> h_lines;
     std::size_t start{}, end, content_length{};
@@ -42,7 +47,12 @@ std::string client_interface::get_request(const std::string &req) {
 
     output.erase(0, output.find("\r\n\r\n") + 4);
 
-    while(output.length() < content_length) output.append(read());
+    while(output.length() < content_length) {
+            if (!(temp = read()).length()){
+                break;
+            }
+             output.append(temp);
+    }
 
     return output;
 }
@@ -59,5 +69,4 @@ inline std::string simple_https::client_interface::prepare_request(const std::st
     output.append("\r\n\r\n");
     return output;
 }
-
 
